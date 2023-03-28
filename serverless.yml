@@ -1,0 +1,110 @@
+frameworkVersion: '^3.3.0'
+service: ${env:SLS_APP_NAME, 'exampleApp'}
+useDotenv: true
+plugins:
+  - serverless-step-functions
+  - serverless-webpack
+  - serverless-offline
+  - serverless-plugin-log-retention
+
+package:
+  individually: true
+
+custom:
+  seed:
+    incremental:
+      enabled: true
+  accountId: ${env:ACCOUNT_ID}
+  logRetentionInDays: 30
+  webpack:
+    webpackConfig: "webpack.config.js"
+    packager: "npm"
+  stepFunctionsLocal:
+    accountId: ${env:ACCOUNT_ID}
+    region: us-east-1
+  inputBucketName: tsh-academy-serverless-workshops-input-bucket-${self:provider.stage}
+  extractedFilesBucketName: tsh-academy-serverless-workshops-extracted-files-${self:provider.stage}
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: ${env:AWS_LAMBDAS_REGION, 'eu-west-1'}
+  stage: ${opt:stage, 'dev'}
+  memorySize: 256
+  timeout: 30
+  environment:
+    APP_NAME: ${env:SLS_APP_NAME, 'tshAcademySlsWorkshops'}
+    AWS_LAMBDAS_REGION: ${env:AWS_LAMBDAS_REGION, 'eu-west-1'}
+    DDB_TABLE_NAME: ${self:service}-test-ddb-table-${self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+        - states:StartExecution
+      Resource:
+        - "*"
+    - Effect: Allow
+      Action:
+        - s3:GetObject
+        - s3:PutObject
+        - sns:Publish
+        - sns:Subscribe
+      Resource:
+        - "*"
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource:
+        - !GetAtt SomeDynamoDbTable.Arn
+
+functions:
+  - ${file(functions/api-hello-world/function.yml)}
+  - ${file(functions/cron-update-dynamodb/function.yml)}
+  - ${file(functions/scan-file/function.yml)}
+  - ${file(workflows/scan-cv-workflow/copy-file/function.yml)}
+  - ${file(workflows/scan-cv-workflow/check-node-experience/function.yml)}
+  - ${file(workflows/scan-cv-workflow/check-it-experience/function.yml)}
+  - ${file(workflows/scan-cv-workflow/check-cloud-experience/function.yml)}
+  - ${file(workflows/scan-cv-workflow/check-exclude-list/function.yml)}
+  - ${file(workflows/scan-cv-workflow/calculate-score/function.yml)}
+  - ${file(workflows/scan-cv-workflow/extract-text/function.yml)}
+
+stepFunctions:
+  stateMachines:
+    ScanCvWorkflow: ${file(workflows/scan-cv-workflow/workflow.yml)}
+
+resources:
+  Outputs:
+    ScanCvWorkflowStateMachine:
+      Description: Scan CV workflow state machine Arn
+      Value:
+        Ref: ScanCvWorkflow${self:service}${opt:stage, 'dev'}
+  Resources:
+    scanSnsTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${self:service}ScanFailedTopic${self:provider.stage}
+    inputBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.inputBucketName}
+    extractedFilesBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.extractedFilesBucketName}
+    ScanCvWorkflowStateMachineRole: ${file(workflows/scan-cv-workflow/workflow.iam.yml)}
+    SomeDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DDB_TABLE_NAME}
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+          - AttributeName: sk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+          - AttributeName: sk
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
