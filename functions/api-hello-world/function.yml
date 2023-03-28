@@ -1,0 +1,7 @@
+api-hello-world:
+  handler: functions/api-hello-world/handler.handle
+  timeout: 10
+  events:
+    - httpApi:
+        path: /hello-world
+        method: GET
