@@ -46,7 +46,7 @@ Hello
     - fill in `ACCOUNT_ID`: `ACCOUNT_ID=<the 12-digit number at the start of "Console login link" in the credentials file>`
     - please, leave the other variables as they are, so we can easily identify your resources after you've deployed them on AWS :)
   - deploy the whole application stack by running `npx sls deploy --aws-profile=tsh-workshops`.
-
+asdas
 When deployed successfully, you will see the deployed step function in [AWS Console](https://eu-west-1.console.aws.amazon.com/states/home?region=eu-west-1#/statemachines):
   * Log in, using the `User name` and `Password` we sent you.
   * You will then be asked to change your password upon your first login.
