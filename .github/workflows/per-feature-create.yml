@@ -10,9 +10,10 @@ jobs:
     name: Ru
 
     steps:
-      - uses: actions/checkout@v1
-      - name: Setup node
-        uses: ./.github/actions/setup-node
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/actions/setup-node
+        name: Setup node
         with:
           node_version: 16
 
@@ -28,9 +29,10 @@ jobs:
     needs: [run-linter-and-unit-tests]
 
     steps:
-      - uses: actions/checkout@v1
-      - name: Setup node
-        uses: ./github/actions/setup-node
+      - uses: actions/checkout@v3
+
+      - uses: ./github/actions/setup-node
+        name: Setup node
         with:
           node_version: 16
 
