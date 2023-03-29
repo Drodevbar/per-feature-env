@@ -12,8 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: ./.github/actions/setup-node
-        name: Setup node
+      - name: Setup node
+        uses: ./.github/actions/setup-node
         with:
           node_version: 16
 
@@ -31,8 +31,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: ./github/actions/setup-node
-        name: Setup node
+      - name: Setup node
+        uses: ./github/actions/setup-node
         with:
           node_version: 16
 
