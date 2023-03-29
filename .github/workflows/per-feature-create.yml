@@ -26,6 +26,8 @@ jobs:
   create-per-feature-environment:
     runs-on: ubuntu-latest
     name: Create per-feature environment
+    environment:
+      name: pr${{ github.event.number }}
     needs: [run-linter-and-unit-tests]
 
     steps:

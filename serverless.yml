@@ -79,6 +79,8 @@ resources:
       Description: Scan CV workflow state machine Arn
       Value:
         Ref: ScanCvWorkflow${self:service}${opt:stage, 'dev'}
+    ExampliApiUri:
+      Value: !GetAtt HttpApi.ApiEndpoint # !Sub "https://${HttpApi}.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}/"
   Resources:
     scanSnsTopic:
       Type: AWS::SNS::Topic
