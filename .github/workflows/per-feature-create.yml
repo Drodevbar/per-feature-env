@@ -28,6 +28,7 @@ jobs:
     name: Create per-feature environment
     environment:
       name: pr${{ github.event.number }}
+      url: https://wp.pl
     needs: [run-linter-and-unit-tests]
 
     steps:
