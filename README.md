@@ -29,6 +29,8 @@ To follow along with the presentation please make sure to have installed:
 - VS Code - https://code.visualstudio.com/
 - AWS Toolkit for VS Code - https://docs.aws.amazon.com/toolkit-for-vscode/latest/userguide/setup-toolkit.html
 
+Hello
+
 ### How to set up
 - checkout onto branch `task/1`: `git checkout task/1`
 - install dependencies by running `npm install`
@@ -39,14 +41,14 @@ To follow along with the presentation please make sure to have installed:
     - Default region name: `eu-west-1`
     - Default output format: the default `None` is fine, just press `Enter`
   - set environment variables:
-    - run `cp .env.dist .env` 
+    - run `cp .env.dist .env`
     - fill in `STUDENT_NAME`: `STUDENT_NAME=<the "User name" from the credentials file>`
     - fill in `ACCOUNT_ID`: `ACCOUNT_ID=<the 12-digit number at the start of "Console login link" in the credentials file>`
     - please, leave the other variables as they are, so we can easily identify your resources after you've deployed them on AWS :)
   - deploy the whole application stack by running `npx sls deploy --aws-profile=tsh-workshops`.
 
 When deployed successfully, you will see the deployed step function in [AWS Console](https://eu-west-1.console.aws.amazon.com/states/home?region=eu-west-1#/statemachines):
-  * Log in, using the `User name` and `Password` we sent you. 
+  * Log in, using the `User name` and `Password` we sent you.
   * You will then be asked to change your password upon your first login.
   * In the list of AWS services, find Step Functions and look for one with your username in it.
 
