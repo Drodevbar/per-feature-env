@@ -43,7 +43,7 @@ jobs:
     name: Create per-feature environment
     environment:
       name: ${{ needs.retrieve-pr-number.outputs.pr_number }}
-      url: ${{ steps.deploy.outputs.pr_number }}
+      url: ${{ steps.deploy.outputs.api_url }}
     needs: [run-linter-and-unit-tests, retrieve-pr-number]
 
     steps:
