@@ -64,5 +64,4 @@ jobs:
         run: | 
           npx sls deploy --stage ${{ needs.retrieve-pr-number.outputs.pr_number }}
           api_url=$(aws cloudformation describe-stacks --stack-name exampleApp-${{ needs.retrieve-pr-number.outputs.pr_number }} --query "Stacks[0].Outputs[?OutputKey=='ExampleApiUri'].OutputValue" --output text)
-          echo api_url
-          echo api_url=$api_url
+          echo api_url=$api_url >> $GITHUB_OUTPUT
