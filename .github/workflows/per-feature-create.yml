@@ -23,13 +23,28 @@ jobs:
       - name: Run unit tests
         run: npm run test:unit
 
+  retrieve-pr-number:
+    runs-on: ubuntu-latest
+    name: Retrieve PR number
+    outputs:
+      pr_number: ${{ steps.retrieve-pr-number.outputs.pr_number }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Retrieve pull request number
+        id: retrieve-pr-number
+        run: |
+          echo pr_number=pr${{ github.event.number }} >> $GITHUB_OUTPUT
+        shell: bash
+
   create-per-feature-environment:
     runs-on: ubuntu-latest
     name: Create per-feature environment
     environment:
-      name: ${{ steps.retrieve-pr-number.outputs.pr_number }}
-      url: https://wp.pl
-    needs: [run-linter-and-unit-tests]
+      name: ${{ needs.retrieve-pr-number.outputs.pr_number }}
+      url: ${{ steps.deploy.outputs.pr_number }}
+    needs: [run-linter-and-unit-tests, retrieve-pr-number]
 
     steps:
       - uses: actions/checkout@v3
@@ -39,16 +54,15 @@ jobs:
         with:
           node_version: 16
 
-      - name: Retrieve pull request number
-        id: retrieve-pr-number
-        run: |
-          echo pr_number=pr${{ github.event.number }} >> $GITHUB_OUTPUT
-        shell: bash
-
-      - name: Deploy to stage ${{ steps.retrieve-pr-number.outputs.pr_number }}
+      - name: Deploy to stage ${{ needs.retrieve-pr-number.outputs.pr_number }}
+        id: deploy
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
           ACCOUNT_ID: ${{ vars.ACCOUNT_ID }}
-        run: npx sls deploy --stage ${{ steps.retrieve-pr-number.outputs.pr_number }}
+        run: | 
+          npx sls deploy --stage ${{ needs.retrieve-pr-number.outputs.pr_number }}
+          api_url=$(aws cloudformation describe-stacks --stack-name exampleApp-${{ needs.retrieve-pr-number.outputs.pr_number }} --query "Stacks[0].Outputs[?OutputKey=='ExampleApiUri'].OutputValue" --output text)
+          echo api_url
+          echo api_url=$api_url
