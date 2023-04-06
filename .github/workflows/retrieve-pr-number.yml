@@ -1,5 +1,9 @@
 on:
   workflow_call:
+    outputs: 
+      pr_number:
+        value: ${{ jobs.retrieve-pr-number.outputs.pr_number }}
+        description: Number of current Pull Request
 
 jobs:
   retrieve-pr-number:
