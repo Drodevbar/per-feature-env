@@ -1,5 +1,5 @@
 frameworkVersion: '^3.3.0'
-service: ${env:SLS_APP_NAME, 'exampleApp'}
+service: ${env:APP_NAME, 'exampleApp'}
 useDotenv: true
 plugins:
   - serverless-step-functions
@@ -32,7 +32,7 @@ provider:
   memorySize: 256
   timeout: 30
   environment:
-    APP_NAME: ${env:SLS_APP_NAME, 'tshAcademySlsWorkshops'}
+    APP_NAME: ${env:APP_NAME, 'tshAcademySlsWorkshops'}
     AWS_LAMBDAS_REGION: ${env:AWS_LAMBDAS_REGION, 'eu-west-1'}
     DDB_TABLE_NAME: ${self:service}-test-ddb-table-${self:provider.stage}
   iamRoleStatements:

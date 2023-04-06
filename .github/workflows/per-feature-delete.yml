@@ -23,8 +23,8 @@ jobs:
 
       - name: Remove stack with stage ${{ needs.get-stage-name.outputs.stage }}
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
-          ACCOUNT_ID: ${{ vars.ACCOUNT_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ vars.DEV_AWS_DEFAULT_REGION }}
+          ACCOUNT_ID: ${{ vars.DEV_AWS_ACCOUNT_ID }}
         run: npx sls remove --stage ${{ needs.get-stage-name.outputs.stage }} --verbose
