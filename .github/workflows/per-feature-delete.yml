@@ -23,8 +23,6 @@ jobs:
   delete-per-feature-environment:
     runs-on: ubuntu-latest
     name: Delete per-feature environment
-    environment:
-      name: ${{ needs.retrieve-pr-number.outputs.pr_number }}
     needs: [retrieve-pr-number]
 
     steps:
@@ -43,9 +41,36 @@ jobs:
           ACCOUNT_ID: ${{ vars.ACCOUNT_ID }}
         run: npx sls remove --stage ${{ needs.retrieve-pr-number.outputs.pr_number }} --verbose
 
-      - name: Set deployment ${{ needs.retrieve-pr-number.outputs.pr_number }} as 'inactive'
-        uses: chrnorm/deployment-status@v2
-        with:
-          token: '${{ github.token }}'
-          state: 'inactive'
-          deployment-id: ${{ needs.retrieve-pr-number.outputs.pr_number }}
+
+# name: Delete per-feature environment
+
+# on:
+#   pull_request:
+#     types: [closed]
+
+# jobs:
+#   delete-per-feature-environment:
+#     runs-on: ubuntu-latest
+#     name: Delete per-feature environment
+
+#     steps:
+#       - uses: actions/checkout@v3
+
+#       - name: Setup node
+#         uses: ./.github/actions/setup-node
+#         with:
+#           node_version: 16
+
+#       - name: Retrieve pull request number
+#         id: retrieve-pr-number
+#         run: |
+#           echo pr_number=pr${{ github.event.number }} >> $GITHUB_OUTPUT
+#         shell: bash
+
+#       - name: Remove stack with stage ${{ steps.retrieve-pr-number.outputs.pr_number }}
+#         env:
+#           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+#           ACCOUNT_ID: ${{ vars.ACCOUNT_ID }}
+#         run: npx sls remove --stage ${{ steps.retrieve-pr-number.outputs.pr_number }} --verbose

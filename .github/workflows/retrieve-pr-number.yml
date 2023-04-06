@@ -1,0 +1,18 @@
+on:
+  workflow_call:
+
+jobs:
+  retrieve-pr-number:
+    runs-on: ubuntu-latest
+    name: Retrieve PR number
+    outputs:
+      pr_number: ${{ steps.retrieve-pr-number.outputs.pr_number }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Retrieve pull request number
+        id: retrieve-pr-number
+        run: |
+          echo pr_number=pr >> $GITHUB_OUTPUT
+        shell: bash
