@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Retrieve pull request number
+      - name: Retrieve pull request number as stage name
         id: get-stage-name
         run: |
           echo stage=pr${{ github.event.number }} >> $GITHUB_OUTPUT
