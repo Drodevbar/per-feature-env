@@ -24,14 +24,11 @@ jobs:
         run: npm run test:unit
 
   retrieve-pr-number:
-    uses: ./.github/workflows/retrieve-pr-number.yml
+    uses: ./.github/workflows/reusable/retrieve-pr-number.yml
     
   create-per-feature-environment:
     runs-on: ubuntu-latest
     name: Create per-feature environment
-    environment:
-      name: ${{ needs.retrieve-pr-number.outputs.pr_number }}
-      url: ${{ steps.deploy.outputs.api_url }}
     needs: [run-linter-and-unit-tests, retrieve-pr-number]
 
     steps:
@@ -51,5 +48,3 @@ jobs:
           ACCOUNT_ID: ${{ vars.ACCOUNT_ID }}
         run: | 
           npx sls deploy --stage ${{ needs.retrieve-pr-number.outputs.pr_number }}
-          api_url=$(aws cloudformation describe-stacks --stack-name exampleApp-${{ needs.retrieve-pr-number.outputs.pr_number }} --query "Stacks[0].Outputs[?OutputKey=='ExampleApiUri'].OutputValue" --output text)
-          echo api_url=$api_url >> $GITHUB_OUTPUT
