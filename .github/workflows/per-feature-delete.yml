@@ -6,7 +6,7 @@ on:
 
 jobs:
   retrieve-pr-number:
-    uses: ./.github/workflows/reusable/retrieve-pr-number.yml
+    uses: ./.github/workflows/retrieve-pr-number.yml
 
   delete-per-feature-environment:
     runs-on: ubuntu-latest
