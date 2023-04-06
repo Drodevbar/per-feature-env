@@ -22,7 +22,7 @@ To follow along with the presentation please make sure to have installed:
 - VS Code
 
 **Resources:**
-- Brew - https://brew.sh/asdas
+- Brew - https://brew.sh/asdasasdas
 - AWS CLI - docs https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 - AWS CLI - Brew https://formulae.brew.sh/formula/awscli
 - Node.js - Brew https://formulae.brew.sh/formula/node
