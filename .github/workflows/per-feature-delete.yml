@@ -5,13 +5,13 @@ on:
     types: [closed]
 
 jobs:
-  retrieve-pr-number:
-    uses: ./.github/workflows/retrieve-pr-number.yml
+  get-stage-name:
+    uses: ./.github/workflows/get-stage-name.yml
 
   delete-per-feature-environment:
     runs-on: ubuntu-latest
     name: Delete per-feature environment
-    needs: [retrieve-pr-number]
+    needs: [get-stage-name]
 
     steps:
       - uses: actions/checkout@v3
@@ -21,10 +21,10 @@ jobs:
         with:
           node_version: 16
 
-      - name: Remove stack with stage ${{ needs.retrieve-pr-number.outputs.pr_number }}
+      - name: Remove stack with stage ${{ needs.get-stage-name.outputs.stage }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
           ACCOUNT_ID: ${{ vars.ACCOUNT_ID }}
-        run: npx sls remove --stage ${{ needs.retrieve-pr-number.outputs.pr_number }} --verbose
+        run: npx sls remove --stage ${{ needs.get-stage-name.outputs.stage }} --verbose

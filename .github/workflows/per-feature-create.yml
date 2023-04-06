@@ -4,6 +4,9 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+env:
+  NODE_VERSION: 16
+
 jobs:
   run-linter-and-unit-tests:
     runs-on: ubuntu-latest
@@ -15,7 +18,7 @@ jobs:
       - name: Setup node
         uses: ./.github/actions/setup-node
         with:
-          node_version: 16
+          node_version: ${{ env.NODE_VERSION }}
 
       - name: Run linter
         run: npm run lint
@@ -23,13 +26,13 @@ jobs:
       - name: Run unit tests
         run: npm run test:unit
 
-  retrieve-pr-number:
-    uses: ./.github/workflows/retrieve-pr-number.yml
+  get-stage-name:
+    uses: ./.github/workflows/get-stage-name.yml
 
   create-per-feature-environment:
     runs-on: ubuntu-latest
     name: Create per-feature environment
-    needs: [run-linter-and-unit-tests, retrieve-pr-number]
+    needs: [run-linter-and-unit-tests, get-stage-name]
 
     steps:
       - uses: actions/checkout@v3
@@ -37,9 +40,9 @@ jobs:
       - name: Setup node
         uses: ./.github/actions/setup-node
         with:
-          node_version: 16
+          node_version: ${{ env.NODE_VERSION }}
 
-      - name: Deploy to stage ${{ needs.retrieve-pr-number.outputs.pr_number }}
+      - name: Deploy to stage ${{ needs.get-stage-name.outputs.stage }}
         id: deploy
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -47,4 +50,4 @@ jobs:
           AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
           ACCOUNT_ID: ${{ vars.ACCOUNT_ID }}
         run: | 
-          npx sls deploy --stage ${{ needs.retrieve-pr-number.outputs.pr_number }}
+          npx sls deploy --stage ${{ needs.get-stage-name.outputs.stage }}
