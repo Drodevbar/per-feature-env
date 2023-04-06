@@ -24,7 +24,7 @@ jobs:
         run: npm run test:unit
 
   retrieve-pr-number:
-    uses: ./.github/workflows/reusable/retrieve-pr-number.yml
+    uses: ./.github/workflows/retrieve-pr-number.yml
     
   create-per-feature-environment:
     runs-on: ubuntu-latest
