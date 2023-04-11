@@ -18,9 +18,9 @@ To follow along with the presentation please make sure to have installed:
 - npm (>= 6.14.12)asdsa
 - git
 - AWS CLI
-- AWS Toolkit
+- AWS Toolkitadasdas
 - VS Code
-
+asdas
 **Resources:**
 - Brew - https://brew.sh/asdas
 - AWS CLI - docs https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
