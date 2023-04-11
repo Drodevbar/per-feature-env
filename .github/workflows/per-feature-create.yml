@@ -34,14 +34,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get stage name
-        id: get-stage-name
-        uses: ./.github/actions/get-stage-name
-
       - name: Setup node
         uses: ./.github/actions/setup-node
         with:
           node_version: ${{ env.NODE_VERSION }}
+
+      - name: Get stage name
+        id: get-stage-name
+        uses: ./.github/actions/get-stage-name
 
       - name: Start the deployment
         uses: bobheadxi/deployments@v1.2.0
