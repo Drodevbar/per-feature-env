@@ -36,6 +36,6 @@ jobs:
       - name: Deactivate environment
         uses: bobheadxi/deployments@v1.2.0
         with:
-          step: deactivate-env
+          step: delete-env
           env: ${{ steps.get-stage-name.outputs.stage }}
           ref: ${{ github.head_ref }}
