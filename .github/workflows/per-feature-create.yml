@@ -59,7 +59,7 @@ jobs:
         run: | 
           npx sls deploy --stage ${{ needs.get-stage-name.outputs.stage }}
           api_uri=$(aws cloudformation describe-stacks --stack-name ${{ vars.APP_NAME }}-${{ needs.get-stage-name.outputs.stage }} --query "Stacks[0].Outputs[?OutputKey=='ApiUri'].OutputValue" --output text)
-          echo api_uri=$api_url >> $GITHUB_OUTPUT
+          echo api_uri=$api_uri >> $GITHUB_OUTPUT
 
       - name: Update the deployment status
         uses: bobheadxi/deployments@v1.2.0
