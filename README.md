@@ -18,7 +18,7 @@ To follow along with the presentation please make sure to have installed:
 - npm (>= 6.14.12)asdsa
 - git
 - AWS CLI
-- AWS Toolkit
+- AWS Toolkitadasdas
 - VS Code
 asdas
 **Resources:**
