@@ -33,6 +33,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Create per-feature environment
     needs: [run-linter-and-unit-tests, get-stage-name]
+    environment:
+      name: ${{ needs.get-stage-name.outputs.stage }}
+      url: ${{ steps.deploy.outputs.api_uri }}
 
     steps:
       - uses: actions/checkout@v3
