@@ -34,8 +34,9 @@ jobs:
           npx sls remove --stage ${{ needs.get-stage-name.outputs.stage }} --verbose
       
       - name: Deactivate environment ${{ needs.get-stage-name.outputs.stage }}
-        uses: bobheadxi/deployments@v1.2.0
+        uses: bobheadxi/deployments@v1.0.0
         with:
           step: deactivate-env
           env: ${{ needs.get-stage-name.outputs.stage }}
           desc: Environment was deactivated
+          token: ${{ github.token }}
