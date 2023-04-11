@@ -20,7 +20,7 @@ To follow along with the presentation please make sure to have installed:
 - AWS CLI
 - AWS Toolkit
 - VS Code
-
+asdas
 **Resources:**
 - Brew - https://brew.sh/asdas
 - AWS CLI - docs https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
