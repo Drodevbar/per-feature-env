@@ -48,7 +48,6 @@ jobs:
         with:
           step: start
           env: ${{ needs.get-stage-name.outputs.stage }}
-          debug: true
 
       - name: Deploy to stage ${{ needs.get-stage-name.outputs.stage }}
         id: deploy
@@ -69,6 +68,7 @@ jobs:
         if: always()
         with:
           step: finish
+          debug: true
           status: ${{ job.status }}
           env: ${{ steps.start-deployment.outputs.env }}
           deployment_id: ${{ steps.start-deployment.outputs.deployment_id }}
