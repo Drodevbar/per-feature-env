@@ -19,7 +19,7 @@ To follow along with the presentation please make sure to have installed:
 - git
 - AWS CLI
 - AWS Toolkit
-- VS Code
+- VS Codessasdasdsa
 
 **Resources:**
 - Brew - https://brew.sh/asdas
