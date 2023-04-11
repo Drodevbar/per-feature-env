@@ -26,16 +26,17 @@ jobs:
       - name: Run unit tests
         run: npm run test:unit
 
-  get-stage-name:
-    uses: ./.github/workflows/get-stage-name.yml
-
   create-per-feature-environment:
     runs-on: ubuntu-latest
     name: Create per-feature environment
-    needs: [run-linter-and-unit-tests, get-stage-name]
+    needs: [run-linter-and-unit-tests]
 
     steps:
       - uses: actions/checkout@v3
+
+      - name: Get stage name
+        id: get-stage-name
+        uses: ./.github/actions/get-stage-name
 
       - name: Setup node
         uses: ./.github/actions/setup-node
@@ -47,10 +48,10 @@ jobs:
         id: start-deployment
         with:
           step: start
-          env: ${{ needs.get-stage-name.outputs.stage }}
+          env: ${{ steps.get-stage-name.outputs.stage }}
           ref: ${{ github.head_ref }}
 
-      - name: Deploy to stage ${{ needs.get-stage-name.outputs.stage }}
+      - name: Deploy to stage ${{ steps.get-stage-name.outputs.stage }}
         id: deploy
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
@@ -58,8 +59,8 @@ jobs:
           AWS_DEFAULT_REGION: ${{ vars.DEV_AWS_DEFAULT_REGION }}
           ACCOUNT_ID: ${{ vars.DEV_AWS_ACCOUNT_ID }}
         run: | 
-          npx sls deploy --stage ${{ needs.get-stage-name.outputs.stage }}
-          api_uri=$(aws cloudformation describe-stacks --stack-name ${{ vars.APP_NAME }}-${{ needs.get-stage-name.outputs.stage }} --query "Stacks[0].Outputs[?OutputKey=='ApiUri'].OutputValue" --output text)
+          npx sls deploy --stage ${{ steps.get-stage-name.outputs.stage }}
+          api_uri=$(aws cloudformation describe-stacks --stack-name ${{ vars.APP_NAME }}-${{ steps.get-stage-name.outputs.stage }} --query "Stacks[0].Outputs[?OutputKey=='ApiUri'].OutputValue" --output text)
           echo api_uri=$api_uri >> $GITHUB_OUTPUT
 
       - name: Update the deployment status

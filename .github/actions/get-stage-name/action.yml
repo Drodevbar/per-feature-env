@@ -1,0 +1,9 @@
+name: Get deployment stage name
+
+runs:
+  using: composite
+  steps:
+    - name: Retrieve pull request number as stage name
+      run: |
+        echo stage=pr${{ github.event.number }} >> $GITHUB_OUTPUT
+      shell: bash
