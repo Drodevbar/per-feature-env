@@ -11,7 +11,7 @@ state machines and develop business flows by orchestrating Lambda functions into
 During the workshop, we are going to show you how to effectively work with Serverless Framework and use it to deploy CloudFormation
 stack. We're going to present some methods of development and how it differs from container based development.
 
-### Requirements:
+### Requirements:sds
 To follow along with the presentation please make sure to have installed:
 - brew
 - node.js (>= 14.16.1, < 15.0.0)
