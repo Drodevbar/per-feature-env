@@ -1,5 +1,9 @@
 name: Get deployment stage name
 
+outputs: 
+  stage:
+   required: true
+
 runs:
   using: composite
   steps:
