@@ -33,9 +33,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Create per-feature environment
     needs: [run-linter-and-unit-tests, get-stage-name]
-    environment:
-      name: ${{ needs.get-stage-name.outputs.stage }}
-      url: ${{ steps.deploy.outputs.api_uri }}
 
     steps:
       - uses: actions/checkout@v3
@@ -45,12 +42,12 @@ jobs:
         with:
           node_version: ${{ env.NODE_VERSION }}
 
-      # - name: Start the deployment
-      #   uses: bobheadxi/deployments@v1.2.0
-      #   id: start-deployment
-      #   with:
-      #     step: start
-      #     env: ${{ needs.get-stage-name.outputs.stage }}
+      - name: Start the deployment
+        uses: bobheadxi/deployments@v1.2.0
+        id: start-deployment
+        with:
+          step: start
+          env: ${{ needs.get-stage-name.outputs.stage }}
 
       - name: Deploy to stage ${{ needs.get-stage-name.outputs.stage }}
         id: deploy
@@ -64,13 +61,13 @@ jobs:
           api_uri=$(aws cloudformation describe-stacks --stack-name ${{ vars.APP_NAME }}-${{ needs.get-stage-name.outputs.stage }} --query "Stacks[0].Outputs[?OutputKey=='ApiUri'].OutputValue" --output text)
           echo api_uri=$api_uri >> $GITHUB_OUTPUT
 
-      # - name: Update the deployment status
-      #   uses: bobheadxi/deployments@v1.2.0
-      #   id: finalize-deployment
-      #   if: always()
-      #   with:
-      #     step: finish
-      #     status: ${{ job.status }}
-      #     env: ${{ steps.start-deployment.outputs.env }}
-      #     deployment_id: ${{ steps.start-deployment.outputs.deployment_id }}
-      #     env_url: ${{ steps.deploy.outputs.api_uri }}
+      - name: Update the deployment status
+        uses: bobheadxi/deployments@v1.2.0
+        id: finalize-deployment
+        if: always()
+        with:
+          step: finish
+          status: ${{ job.status }}
+          env: ${{ steps.start-deployment.outputs.env }}
+          deployment_id: ${{ steps.start-deployment.outputs.deployment_id }}
+          env_url: ${{ steps.deploy.outputs.api_uri }}
