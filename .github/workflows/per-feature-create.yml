@@ -42,6 +42,13 @@ jobs:
         with:
           node_version: ${{ env.NODE_VERSION }}
 
+      - name: Start the deployment of ${{ needs.get-stage-name.outputs.stage }}
+        uses: bobheadxi/deployments@v1.2.0
+        id: start-deployment
+        with:
+          step: start
+          env: ${{ needs.get-stage-name.outputs.stage }}
+
       - name: Deploy to stage ${{ needs.get-stage-name.outputs.stage }}
         id: deploy
         env:
@@ -49,5 +56,19 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ vars.DEV_AWS_DEFAULT_REGION }}
           ACCOUNT_ID: ${{ vars.DEV_AWS_ACCOUNT_ID }}
+          APP_NAME: ${{ vars.APP_NAME }}
         run: | 
           npx sls deploy --stage ${{ needs.get-stage-name.outputs.stage }}
+          api_url=$(aws cloudformation describe-stacks --stack-name ${{ env.APP_NAME }}-${{ needs.get-stage-name.outputs.stage }} --query "Stacks[0].Outputs[?OutputKey=='ApiUri'].OutputValue" --output text)
+          echo api_url=$api_url >> $GITHUB_OUTPUT
+
+      - name: Update deployment status of ${{ needs.get-stage-name.outputs.stage }}
+        uses: bobheadxi/deployments@v1.2.0
+        id: finalize-deployment
+        if: always()
+        with:
+          step: finish
+          status: ${{ job.status }}
+          env: ${{ steps.start-deployment.outputs.env }}
+          deployment_id: ${{ steps.start-deployment.outputs.deployment_id }}
+          env_url: ${{ steps.deploy.outputs.api_url }}
