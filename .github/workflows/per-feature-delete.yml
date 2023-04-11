@@ -38,3 +38,4 @@ jobs:
         with:
           step: deactivate-env
           env: ${{ needs.get-stage-name.outputs.stage }}
+          ref: ${{ github.head_ref }}
