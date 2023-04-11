@@ -43,6 +43,10 @@ jobs:
         id: get-stage-name
         uses: ./.github/actions/get-stage-name
 
+      - name: foo
+        run: |
+          echo ${{ steps.get-stage-name.outputs.stage }}
+
       - name: Start the deployment
         uses: bobheadxi/deployments@v1.2.0
         id: start-deployment
