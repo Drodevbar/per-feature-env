@@ -48,6 +48,7 @@ jobs:
         with:
           step: start
           env: ${{ needs.get-stage-name.outputs.stage }}
+          ref: ${{ github.head_ref }}
 
       - name: Deploy to stage ${{ needs.get-stage-name.outputs.stage }}
         id: deploy
@@ -71,3 +72,4 @@ jobs:
           env: ${{ steps.start-deployment.outputs.env }}
           deployment_id: ${{ steps.start-deployment.outputs.deployment_id }}
           env_url: ${{ steps.deploy.outputs.api_uri }}
+          ref: ${{ github.head_ref }}
