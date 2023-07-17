@@ -1,6 +1,3 @@
 update-dynamodb:
   handler: update-dynamodb/handler.handle
   timeout: 23
-  environment:
-    PK: '1'
-    SK: '2'
