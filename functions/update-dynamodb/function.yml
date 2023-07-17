@@ -1,0 +1,3 @@
+update-dynamodb:
+  handler: update-dynamodb/handler.handle
+  timeout: 23

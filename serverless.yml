@@ -110,3 +110,6 @@ resources:
           - AttributeName: sk
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
+```
+
+Please note that no changes were made to the code in the `functions` section, as the `update-dynamodb` function and its properties were removed according to the diff.
