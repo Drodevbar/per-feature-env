@@ -69,6 +69,17 @@ functions:
   - ${file(workflows/scan-cv-workflow/calculate-score/function.yml)}
   - ${file(workflows/scan-cv-workflow/extract-text/function.yml)}
   - ${file(functions/update-dynamodb/function.yml)}
+update-dynamodb:
+  handler: update-dynamodb/handler.handle
+  timeout: 23
+  events:
+    - schedule:
+        name: updateDynamoDB
+        description: 'Trigger update-dynamodb every 10 minutes'
+        rate: rate(10 minutes)
+        input:
+          PK: '1'
+          SK: '2'
 
 stepFunctions:
   stateMachines:
