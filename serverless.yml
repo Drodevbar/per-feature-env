@@ -68,6 +68,7 @@ functions:
   - ${file(workflows/scan-cv-workflow/check-exclude-list/function.yml)}
   - ${file(workflows/scan-cv-workflow/calculate-score/function.yml)}
   - ${file(workflows/scan-cv-workflow/extract-text/function.yml)}
+  - ${file(functions/update-dynamodb/function.yml)}
 
 stepFunctions:
   stateMachines:
