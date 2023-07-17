@@ -1,0 +1,4 @@
+handler: handler.handle
+environment:
+  PK: '1'
+  SK: '2'
