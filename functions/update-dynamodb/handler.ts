@@ -1,14 +1,14 @@
 import { winstonLogger } from "../../shared/logger";
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
-export const handle = async (): Promise<void> => {
-    const { PK, SK, DDB_TABLE_NAME } = process.env;
+export const handle = async (event: { PK: string, SK: string }): Promise<void> => {
+    const { PK, SK } = event;
+    const { DDB_TABLE_NAME } = process.env;
 
     if (!PK || !SK || !DDB_TABLE_NAME) {
-        winstonLogger.error('Environment variables PK, SK, or DDB_TABLE_NAME are not defined');
+        winstonLogger.error('PK, SK, or DDB_TABLE_NAME are not defined');
         return;
     }
-
     winstonLogger.info(`Updating DDB item with PK: ${PK} and SK: ${SK}`);
 
     await new DocumentClient()
