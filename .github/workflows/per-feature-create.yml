@@ -29,14 +29,17 @@ jobs:
   create-per-feature-environment:
     runs-on: ubuntu-latest
     name: Create per-feature environment
-    environment: dev
+#    environment: dev
     needs: [run-linter-and-unit-tests]
+    environment:
+      name: abc
+      url: https://wp.pl
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: tmp
-        run: echo ${{ vars.TEST_VAR }}
+#      - name: tmp
+#        run: echo ${{ vars.TEST_VAR }}
 
       - name: Setup node
         uses: ./.github/actions/setup-node
@@ -47,13 +50,13 @@ jobs:
         id: get-stage-name
         uses: ./.github/actions/get-stage-name
 
-      - name: Start the deployment
-        uses: bobheadxi/deployments@v1.2.0
-        id: start-deployment
-        with:
-          step: start
-          env: ${{ steps.get-stage-name.outputs.stage }}
-          ref: ${{ github.head_ref }}
+#      - name: Start the deployment
+#        uses: bobheadxi/deployments@v1.2.0
+#        id: start-deployment
+#        with:
+#          step: start
+#          env: ${{ steps.get-stage-name.outputs.stage }}
+#          ref: ${{ github.head_ref }}
 
       - name: Deploy to stage ${{ steps.get-stage-name.outputs.stage }}
         id: deploy
@@ -68,14 +71,14 @@ jobs:
           api_uri=$(aws cloudformation describe-stacks --stack-name ${{ env.APP_NAME }}-${{ steps.get-stage-name.outputs.stage }} --query "Stacks[0].Outputs[?OutputKey=='ApiUri'].OutputValue" --output text)
           echo api_uri=$api_uri >> $GITHUB_OUTPUT
 
-      - name: Update the deployment status
-        uses: bobheadxi/deployments@v1.2.0
-        id: finalize-deployment
-        if: always()
-        with:
-          step: finish
-          status: ${{ job.status }}
-          env: ${{ steps.start-deployment.outputs.env }}
-          deployment_id: ${{ steps.start-deployment.outputs.deployment_id }}
-          env_url: ${{ steps.deploy.outputs.api_uri }}
-          ref: ${{ github.head_ref }}
+#      - name: Update the deployment status
+#        uses: bobheadxi/deployments@v1.2.0
+#        id: finalize-deployment
+#        if: always()
+#        with:
+#          step: finish
+#          status: ${{ job.status }}
+#          env: ${{ steps.start-deployment.outputs.env }}
+#          deployment_id: ${{ steps.start-deployment.outputs.deployment_id }}
+#          env_url: ${{ steps.deploy.outputs.api_uri }}
+#          ref: ${{ github.head_ref }}
