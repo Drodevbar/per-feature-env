@@ -29,10 +29,14 @@ jobs:
   create-per-feature-environment:
     runs-on: ubuntu-latest
     name: Create per-feature environment
+    environment: dev
     needs: [run-linter-and-unit-tests]
 
     steps:
       - uses: actions/checkout@v3
+
+      - name: tmp
+        run: echo ${{ vars.TEST_VAR }}
 
       - name: Setup node
         uses: ./.github/actions/setup-node
