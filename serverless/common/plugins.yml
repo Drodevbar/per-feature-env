@@ -1,0 +1,5 @@
+plugins:
+  - serverless-step-functions
+  - serverless-webpack
+  - serverless-offline
+  - serverless-plugin-log-retention

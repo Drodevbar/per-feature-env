@@ -1,61 +1,36 @@
-frameworkVersion: '^3.3.0'
-service: ${env:APP_NAME, 'exampleApp'}
+frameworkVersion: ${file(serverless/common/base.yml):frameworkVersion}
+service: ${env:APP_NAME_2, 'exampleApp2'}
 useDotenv: true
-plugins:
-  - serverless-step-functions
-  - serverless-webpack
-  - serverless-offline
-  - serverless-plugin-log-retention
+plugins: ${file(serverless/common/plugins.yml):plugins}
 
 package:
   individually: true
 
 custom:
-  seed:
-    incremental:
-      enabled: true
-  accountId: ${env:ACCOUNT_ID}
-  logRetentionInDays: 30
-  webpack:
-    webpackConfig: "webpack.config.js"
-    packager: "npm"
-  stepFunctionsLocal:
-    accountId: ${env:ACCOUNT_ID}
-    region: us-east-1
-  inputBucketName: tsh-academy-serverless-workshops-input-bucket-${self:provider.stage}
-  extractedFilesBucketName: tsh-academy-serverless-workshops-extracted-files-${self:provider.stage}
+  seed: ${file(serverless/common/custom.yml):seed}
+  accountId: ${file(serverless/common/custom.yml):accountId}
+  env: ${file(serverless/common/custom.yml):env}
+  logRetentionInDays: ${file(serverless/common/custom.yml):logRetentionInDays}
+  webpack: ${file(serverless/common/custom.yml):webpack}
+  stepFunctionsLocal: ${file(serverless/common/custom.yml):stepFunctionsLocal}
+  inputBucketName: ${file(serverless/common/custom.yml):inputBucketName}
+  extractedFilesBucketName: ${file(serverless/common/custom.yml):extractedFilesBucketName}
+  infraService: ${env:COMMON_APP_NAME, 'exampleAppCommon'}
+  service:
+    this: ${self:service}
+    infra: ${env:APP_NAME}
 provider:
-  name: aws
-  runtime: nodejs14.x
-  region: ${env:AWS_LAMBDAS_REGION, 'eu-west-1'}
-  stage: ${opt:stage, 'dev'}
-  memorySize: 256
-  timeout: 30
+  name: ${file(serverless/common/provider.yml):name}
+  runtime: ${file(serverless/common/provider.yml):runtime}
+  region: ${file(serverless/common/provider.yml):region}
+  stage: ${file(serverless/common/provider.yml):stage}
+  memorySize: ${file(serverless/common/provider.yml):memorySize}
+  timeout: ${file(serverless/common/provider.yml):timeout}
   environment:
     APP_NAME: ${env:APP_NAME, 'tshAcademySlsWorkshops'}
     AWS_LAMBDAS_REGION: ${env:AWS_LAMBDAS_REGION, 'eu-west-1'}
-    DDB_TABLE_NAME: ${self:service}-test-ddb-table-${self:provider.stage}
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - lambda:InvokeFunction
-        - states:StartExecution
-      Resource:
-        - "*"
-    - Effect: Allow
-      Action:
-        - s3:GetObject
-        - s3:PutObject
-        - sns:Publish
-        - sns:Subscribe
-      Resource:
-        - "*"
-    - Effect: Allow
-      Action:
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-      Resource:
-        - !GetAtt SomeDynamoDbTable.Arn
+    DDB_TABLE_NAME: ${self:custom.service.infra}-test-ddb-table-${self:custom.env}
+  iamRoleStatements: ${file(serverless/common/provider.yml):iamRoleStatements}
 
 functions:
   - ${file(functions/api-hello-world/function.yml)}
@@ -95,18 +70,3 @@ resources:
       Properties:
         BucketName: ${self:custom.extractedFilesBucketName}
     ScanCvWorkflowStateMachineRole: ${file(workflows/scan-cv-workflow/workflow.iam.yml)}
-    SomeDynamoDbTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:provider.environment.DDB_TABLE_NAME}
-        AttributeDefinitions:
-          - AttributeName: pk
-            AttributeType: S
-          - AttributeName: sk
-            AttributeType: S
-        KeySchema:
-          - AttributeName: pk
-            KeyType: HASH
-          - AttributeName: sk
-            KeyType: RANGE
-        BillingMode: PAY_PER_REQUEST

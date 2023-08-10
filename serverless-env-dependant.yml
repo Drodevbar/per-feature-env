@@ -1,0 +1,85 @@
+frameworkVersion: ${file(serverless/common/base.yml):frameworkVersion}
+service: ${env:APP_NAME, 'exampleApp'}
+useDotenv: true
+plugins: ${file(serverless/common/plugins.yml)}
+
+package:
+  individually: true
+
+custom:
+  seed: ${file(serverless/common/custom.yml):seed}
+  accountId: ${file(serverless/common/custom.yml):accountId}
+  env: ${file(serverless/common/custom.yml):env}
+  logRetentionInDays: ${file(serverless/common/custom.yml):logRetentionInDays}
+  webpack: ${file(serverless/common/custom.yml):webpack}
+  stepFunctionsLocal: ${file(serverless/common/custom.yml):stepFunctionsLocal}
+  inputBucketName: ${file(serverless/common/custom.yml):inputBucketName}
+  extractedFilesBucketName: ${file(serverless/common/custom.yml):extractedFilesBucketName}
+provider:
+  name: ${file(serverless/common/provider.yml):name}
+  runtime: ${file(serverless/common/provider.yml):runtime}
+  region: ${file(serverless/common/provider.yml):region}
+  stage: ${file(serverless/common/provider.yml):stage}
+  memorySize: ${file(serverless/common/provider.yml):memorySize}
+  timeout: ${file(serverless/common/provider.yml):timeout}
+  environment:
+    APP_NAME: ${env:APP_NAME, 'tshAcademySlsWorkshops'}
+    AWS_LAMBDAS_REGION: ${env:AWS_LAMBDAS_REGION, 'eu-west-1'}
+    DDB_TABLE_NAME: ${self:service}-test-ddb-table-${self:custom.env}
+  iamRoleStatements: ${file(serverless/common/provider.yml):iamRoleStatements}
+
+resources:
+  Resources:
+    SomeDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DDB_TABLE_NAME}
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+          - AttributeName: sk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+          - AttributeName: sk
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: UserPool${self:service}${opt:stage, 'dev'}
+        Schema:
+          - AttributeDataType: String
+            Name: email
+            Required: False
+            Mutable: True
+          - AttributeDataType: String
+            Name: phone
+            Required: false
+            Mutable: False
+          - AttributeDataType: String
+            Name: msalIdToken
+            Required: false
+            Mutable: True
+        AutoVerifiedAttributes:
+          - email
+        UsernameConfiguration:
+          CaseSensitive: False
+        UsernameAttributes:
+          - email
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireLowercase: True
+            RequireUppercase: True
+            RequireNumbers: True
+            RequireSymbols: False
+        AccountRecoverySetting:
+          RecoveryMechanisms:
+            - Name: verified_email
+              Priority: 1
+        EmailConfiguration:
+          EmailSendingAccount: COGNITO_DEFAULT
+        VerificationMessageTemplate:
+          DefaultEmailOption: CONFIRM_WITH_LINK
