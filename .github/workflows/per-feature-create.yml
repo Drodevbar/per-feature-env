@@ -45,6 +45,7 @@ jobs:
         uses: ./.github/actions/get-stage-name
 
       - name: Get postgres URL
+        id: get-postgres-url
         uses: ./.github/actions/get-postgres-url
         with:
           user: user
@@ -73,6 +74,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ vars.DEV_AWS_DEFAULT_REGION }}
           ACCOUNT_ID: ${{ vars.DEV_AWS_ACCOUNT_ID }}
+          APP_NAME: ${{ vars.APP_NAME }}
         run: |
           npx sls deploy --stage ${{ steps.get-stage-name.outputs.stage }}
           api_uri=$(aws cloudformation describe-stacks --stack-name ${{ vars.APP_NAME }}-${{ steps.get-stage-name.outputs.stage }} --query "Stacks[0].Outputs[?OutputKey=='ApiUri'].OutputValue" --output text)
