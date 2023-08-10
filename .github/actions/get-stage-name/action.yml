@@ -1,6 +1,7 @@
 name: Get deployment stage name
+description: Get deployment stage name
 
-outputs: 
+outputs:
   stage:
    description: Stage name
    value: ${{ steps.get-stage-name.outputs.stage }}
