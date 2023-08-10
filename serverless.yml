@@ -11,8 +11,14 @@ package:
   individually: true
 
 custom:
-  - ${file(serverless/common/custom.yml):custom}
-  - ${file(serverless/unique/custom.yml):custom}
+  seed: ${file(serverless/common/custom.yml):seed}
+  accountId: ${file(serverless/common/custom.yml):accountId}
+  logRetentionInDays: ${file(serverless/common/custom.yml):logRetentionInDays}
+  webpack: ${file(serverless/common/custom.yml):webpack}
+  stepFunctionsLocal: ${file(serverless/common/custom.yml):stepFunctionsLocal}
+  inputBucketName: ${file(serverless/common/custom.yml):inputBucketName}
+  extractedFilesBucketName: ${file(serverless/common/custom.yml):extractedFilesBucketName}
+  infraService: ${env:COMMON_APP_NAME, 'exampleAppCommon'}
 provider:
   name: aws
   runtime: nodejs14.x

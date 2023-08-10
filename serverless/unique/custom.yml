@@ -1,2 +1,0 @@
-custom:
-  infraService: ${env:COMMON_APP_NAME, 'exampleAppCommon'}
