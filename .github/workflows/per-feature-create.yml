@@ -44,11 +44,19 @@ jobs:
         id: get-stage-name
         uses: ./.github/actions/get-stage-name
 
-      - name: tmp
-        run: echo ${{ vars.TEST_VAR }}
+      - name: Get postgres URL
+        uses: ./.github/actions/get-postgres-url
+        with:
+          user: user
+          password: password
+          host: host
+          db_name_prefix: prefix
+          stage: ${{ steps.get-stage-name.outputs.stage }}
 
-      - name: some action
-        uses: ./.github/actions/some-action
+      - name: tmp
+        run: |
+          echo ${{ vars.TEST_VAR }}
+          echo ${{ steps.get-postgres-url.outputs.url }}
 
       - name: Start the deployment
         uses: bobheadxi/deployments@v1.2.0

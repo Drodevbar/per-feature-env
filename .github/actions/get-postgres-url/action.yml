@@ -1,0 +1,33 @@
+name: Get Postgres URL
+description: Get Postgres URL
+
+inputs:
+  user:
+    description: Postgres user
+    required: true
+  password:
+    description: Postgres password
+    required: true
+  host:
+    description: Postgres host
+    required: true
+  db_name_prefix:
+    description: Postgres database name prefix
+    required: true
+  stage:
+    description: Stage name
+    required: true
+
+outputs:
+  url:
+    description: Postgres URL
+    value: ${{ steps.get-postgres-url.outputs.url }}
+
+runs:
+  using: composite
+  steps:
+    - name: Build Postgres URL
+      id: get-postgres-url
+      run: |
+        echo url="postgres://${{ inputs.user }}:${{ inputs.password }}@${{ inputs.host }}/${{ inputs.db_name_prefix }}_${{ inputs.stage }}" >> $GITHUB_OUTPUT
+      shell: bash

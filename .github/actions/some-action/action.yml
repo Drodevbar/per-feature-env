@@ -1,9 +1,0 @@
-name: Some action
-description: Some action description
-
-runs:
-  using: composite
-  steps:
-    - name: tmp
-      shell: bash
-      run: echo ${{ vars.TEST_VAR }}
