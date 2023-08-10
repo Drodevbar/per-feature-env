@@ -1,0 +1,14 @@
+custom:
+  seed:
+    incremental:
+      enabled: true
+  accountId: ${env:ACCOUNT_ID}
+  logRetentionInDays: 30
+  webpack:
+    webpackConfig: "webpack.config.js"
+    packager: "npm"
+  stepFunctionsLocal:
+    accountId: ${env:ACCOUNT_ID}
+    region: us-east-1
+  inputBucketName: tsh-academy-serverless-workshops-input-bucket-${self:provider.stage}
+  extractedFilesBucketName: tsh-academy-serverless-workshops-extracted-files-${self:provider.stage}

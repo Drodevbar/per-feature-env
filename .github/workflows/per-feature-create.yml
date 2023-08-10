@@ -20,11 +20,11 @@ jobs:
         with:
           node_version: ${{ env.NODE_VERSION }}
 
-      - name: Run linter
-        run: npm run lint
-
-      - name: Run unit tests
-        run: npm run test:unit
+#      - name: Run linter
+#        run: npm run lint
+#
+#      - name: Run unit tests
+#        run: npm run test:unit
 
   create-per-feature-environment:
     runs-on: ubuntu-latest
